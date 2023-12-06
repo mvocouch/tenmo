@@ -38,7 +38,25 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public boolean addToBalance(BigDecimal amount){
+        BigDecimal maximumBalance = new BigDecimal("9999999999999.99");
+        int balanceMaxedOut = 1; //compareTo() returns 1 for "greater than"
+
+        if (balance.add(amount).compareTo(maximumBalance) == balanceMaxedOut){
+            return false;
+        }
+
+        balance = balance.add(amount);
+        return true;
+    }
+    public boolean subtractFromBalance(BigDecimal transferAmount){
+        int balanceInsufficient = -1; //compareTo() returns -1 for "less than"
+
+        if (balance.compareTo(transferAmount) == balanceInsufficient){
+            return false;
+        }
+
+        balance = balance.subtract(transferAmount);
+        return true;
     }
 }

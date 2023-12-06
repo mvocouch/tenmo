@@ -3,7 +3,6 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.relational.core.sql.Where;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
