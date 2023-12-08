@@ -17,8 +17,6 @@ import java.security.Principal;
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class TransferController {
-
-    private final TransferService;
     private final AccountDao accountDao;
     private final TransferService transferService;
 
