@@ -39,6 +39,12 @@ public class Account {
     }
 
     public boolean addToBalance(BigDecimal amount){
+        int integerValue = amount.intValue();
+
+        if (integerValue <= 0){
+            return false;
+        }
+
         BigDecimal maximumBalance = new BigDecimal("9999999999999.99");
         BigDecimal sum = balance.add(amount);
         int balanceMaxedOut = 1; //compareTo() returns 1 for "greater than"
