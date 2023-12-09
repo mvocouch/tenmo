@@ -13,6 +13,9 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account() {
+    }
+
     public Account(int user_id, BigDecimal balance) {
         this.user_id = user_id;
         this.balance = balance;
@@ -36,6 +39,10 @@ public class Account {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public boolean addToBalance(BigDecimal amount){

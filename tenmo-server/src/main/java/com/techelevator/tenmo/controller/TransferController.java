@@ -17,11 +17,9 @@ import java.security.Principal;
 @PreAuthorize("isAuthenticated()")
 @RestController
 public class TransferController {
-    private final AccountDao accountDao;
     private final TransferService transferService;
 
-    public TransferController(AccountDao accountDao, TransferService transferService) {
-        this.accountDao = accountDao;
+    public TransferController(TransferService transferService) {
         this.transferService = transferService;
     }
 
@@ -38,5 +36,4 @@ public class TransferController {
 
         return transfer;
     }
-
 }

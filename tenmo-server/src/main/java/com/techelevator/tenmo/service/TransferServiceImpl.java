@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 
 @Component
 public class TransferServiceImpl implements TransferService{
-
     private final AccountDao accountDao;
 
     public TransferServiceImpl(AccountDao accountDao){
@@ -43,6 +42,7 @@ public class TransferServiceImpl implements TransferService{
                     " has maxed out it's balance and cannot receive the allotted funds");
         }
 
-        return null;
+        return transfer;
+
     }
 }
