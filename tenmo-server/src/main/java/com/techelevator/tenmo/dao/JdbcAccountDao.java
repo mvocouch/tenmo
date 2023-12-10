@@ -16,6 +16,11 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
+    public Account updateAccountBalance(Account accountToUpdate) {
+        return null;
+    }
+
+    @Override
     public Account getAccountById(int accountId) {
         Account account = null;
         String sql = "SELECT * from account " +
@@ -31,6 +36,11 @@ public class JdbcAccountDao implements AccountDao {
             throw new DaoException("Data integrity violation", e);
         }
         return account;
+    }
+
+    @Override
+    public Account getAccountByUserId(int userId) {
+        return null;
     }
 
     private Account mapToAccount(SqlRowSet sqlRowSet) {
