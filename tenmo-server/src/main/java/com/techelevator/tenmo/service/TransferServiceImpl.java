@@ -1,9 +1,11 @@
 package com.techelevator.tenmo.service;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dto.TransferDto;
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,32 +19,17 @@ public class TransferServiceImpl implements TransferService{
     }
 
     @Override
-    public Transfer createTransfer(Transfer transfer) {
-        BigDecimal transferAmount = transfer.getAmount();
-        int accountIdFrom = transfer.getAccountFrom();
-        int accountIdTo = transfer.getAccountTo();
+    public Transfer createTransferFromDto(User loggedInUser, TransferDto transferDto) {
+        Transfer transfer = new Transfer();
+        int defaultStatusPending = 1;
 
-        Account accountFrom = accountDao.getAccountById(accountIdFrom);
-        Account accountTo = accountDao.getAccountById(accountIdTo);
-
-        if (accountFrom.equals(accountTo)){
-            throw new DaoException("Funds cannot be transferred from and received by the same account.");
-        }
-
-        boolean fundsWithdrawn = accountFrom.subtractFromBalance(transferAmount);
-        if (!fundsWithdrawn){
-            throw new DaoException("The account #" + accountTo.getAccount_id() +
-                    " has an insufficient balance to perform the requested withdrawal.");
-        }
-
-        boolean fundsReceived = accountTo.addToBalance(transferAmount);
-        if (!fundsReceived){
-            accountFrom.addToBalance(transferAmount);
-            throw new DaoException("The account #" + accountFrom.getAccount_id() +
-                    " has maxed out it's balance and cannot receive the allotted funds");
-        }
+        Account senderAccount = accountDao.getAccountByUserId(loggedInUser.getId());
+        Account account = accountDao.getAccountByUserId(transferDto.getUserId());
+        transfer.setTransferStatus(defaultStatusPending);
+        transfer.setAccountTo(account.getAccount_id());
+        transfer.setAccountFrom(senderAccount.getAccount_id());
+        transfer.setAmount(transferDto.getAmount());
 
         return transfer;
-
     }
 }
