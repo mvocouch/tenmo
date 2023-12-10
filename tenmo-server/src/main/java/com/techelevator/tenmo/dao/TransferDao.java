@@ -6,12 +6,10 @@ import java.util.List;
 
 public interface TransferDao {
 
+    List<Transfer> findAll();
+    List<Transfer> getTransfersForUser(int userId);
+    Transfer addTransfer(Transfer newtransfer);
 
-    List<Transfer> getTransfers(int accountId);
 
-    Transfer getTransferById(int transferId);
-
-    List<Transfer> getTransfersReceivedById(int accountTo);
-
-    List<Transfer> getTransfersSentById(int accountFrom);
+    Transfer getTransferById(long transferId);
 }
