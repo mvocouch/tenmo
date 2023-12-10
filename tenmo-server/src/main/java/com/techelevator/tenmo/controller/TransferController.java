@@ -34,10 +34,12 @@ public class TransferController {
         Transfer createdTransfer;
         try{
             createdTransfer = transferService.createTransferFromDto(loggedInUser, transferDto);
+            boolean isSending = transferDto.getType().equalsIgnoreCase("sending");
+
             if (createdTransfer == null){
                 //Create custom exception
                 throw new RuntimeException();
-            } else {
+            } else if (isSending){
                 accountService.transferFunds(createdTransfer);
             }
         }  catch (Exception e) {

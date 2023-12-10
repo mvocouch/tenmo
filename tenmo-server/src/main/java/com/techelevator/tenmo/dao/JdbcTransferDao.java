@@ -95,6 +95,11 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
+    public Transfer updateTransferStatus(long transferId, int newStatus) {
+        return null;
+    }
+
+    @Override
     public Transfer getTransferById(long transferId) {
         Transfer transfer = null;
         String sql = SQL_SELECT_TRANSFER +
