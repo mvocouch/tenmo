@@ -7,19 +7,21 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class TransferServiceImpl implements TransferService{
     private final AccountDao accountDao;
     private final TransferDao transferDao;
+    private final AccountService accountService;
 
-    public TransferServiceImpl(AccountDao accountDao, TransferDao transferDao){
+    public TransferServiceImpl(AccountDao accountDao, TransferDao transferDao, AccountService accountService){
         this.accountDao = accountDao;
         this.transferDao = transferDao;
+        this.accountService = accountService;
     }
 
-    @Override
-    public Transfer createTransferFromDto(User loggedInUser, TransferDto transferDto) {
+    private Transfer createTransferFromDto(User loggedInUser, TransferDto transferDto) {
         Transfer transfer = new Transfer();
         int defaultStatusPending = 1;
 
@@ -30,8 +32,12 @@ public class TransferServiceImpl implements TransferService{
         transfer.setAccountFrom(senderAccount.getAccount_id());
         transfer.setAmount(transferDto.getAmount());
 
+        return transfer;
+    }
+    public Transfer initializeTransfer(User loggedInUser, TransferDto transferDto) {
+        Transfer transfer = createTransferFromDto(loggedInUser, transferDto);
+        accountService.transferFunds(transfer);
         transferDao.addTransfer(transfer);
-
         return transfer;
     }
 }

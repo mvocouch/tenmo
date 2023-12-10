@@ -3,6 +3,7 @@ package com.techelevator.tenmo.dto;
 import java.math.BigDecimal;
 
 public class TransferDto {
+    // user Id depends on who is receiving learned from type
     private final int userId;
     private final BigDecimal amount;
     private final String type;

@@ -16,6 +16,8 @@ public class Transfer {
     @NotNull
     private int transferStatus;
     @NotNull
+    private int transferType;
+    @NotNull
     private int accountFrom;
     @NotNull
     private int accountTo;
@@ -40,6 +42,14 @@ public class Transfer {
     }
 
     public Transfer() {
+    }
+
+    public int getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(int transferType) {
+        this.transferType = transferType;
     }
 
     public long getId() {
