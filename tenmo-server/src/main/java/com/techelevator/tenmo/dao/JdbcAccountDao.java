@@ -40,12 +40,27 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account getAccountByUserId(int userId) {
-        return null;
+        Account account = null;
+        String sql = "SELECT * from account " +
+                "WHERE user_id = ?;";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            if (results.next()) {
+                account = mapToAccount(results);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return account;
     }
 
     private Account mapToAccount(SqlRowSet sqlRowSet) {
         Account account = new Account();
         account.setAccount_id(sqlRowSet.getInt("account_id"));
+        account.setBalance(sqlRowSet.getBigDecimal("balance"));
+        account.setUser_id(sqlRowSet.getInt("user_id"));
         return account;
     }
 }
