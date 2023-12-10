@@ -45,11 +45,11 @@ public class UserService {
         return returnedUser;
     }
 
-    public boolean updateUser(User updateedUser){
-        HttpEntity<User> entity = makeUserEntity(updateedUser);
+    public boolean updateUser(User updatedUser){
+        HttpEntity<User> entity = makeUserEntity(updatedUser);
         boolean success = false;
         try {
-            restTemplate.put(baseUrl + updateedUser.getId(), entity);
+            restTemplate.put(baseUrl + updatedUser.getId(), entity);
             success =true;
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
