@@ -18,6 +18,10 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account() {
+
+    }
+
     public int getAccount_id() {
         return account_id;
     }
