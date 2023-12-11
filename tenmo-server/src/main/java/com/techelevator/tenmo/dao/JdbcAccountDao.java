@@ -8,6 +8,8 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import java.math.BigDecimal;
+
 public class JdbcAccountDao implements AccountDao {
     private final JdbcTemplate jdbcTemplate;
 
@@ -17,7 +19,35 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account updateAccountBalance(Account accountToUpdate) {
-        return null;
+        Account account = null;
+        BigDecimal updatedBalance = accountToUpdate.getBalance();
+        int accountId = accountToUpdate.getAccount_id();
+
+        Account currentAccount = getAccountById(accountId);
+        if (currentAccount == null) {
+            return null;}
+        BigDecimal currentBalance = currentAccount.getBalance();
+        BigDecimal difference = updatedBalance.subtract(currentBalance);
+
+        if (difference.compareTo(BigDecimal.ZERO) > 0) {
+            if (!currentAccount.addToBalance(difference)) {
+                return null;
+            }
+        } else if (difference.compareTo(BigDecimal.ZERO) < 0) {
+            if (!currentAccount.subtractFromBalance(difference.abs())) {
+                return null;
+            }
+        } else {
+            return currentAccount;
+        }
+
+        String sql = "UPDATE account SET balance = ? WHERE account_id = ?";
+        try {
+            jdbcTemplate.update(sql, currentAccount.getBalance(), accountId);
+        } catch (CannotGetJdbcConnectionException | DataIntegrityViolationException e) {
+            throw new DaoException("Unable to update account balance", e);
+        }
+        return currentAccount;
     }
 
     @Override
