@@ -74,7 +74,7 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
    public Transfer addTransfer(Transfer newtransfer) {
-//
+
 //    String sql = "INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
 //            "VALUES (?, ?, ?, ?, ?, ?);";
 //       Long newTransferId = getNextTransferId();
@@ -91,7 +91,12 @@ public class JdbcTransferDao implements TransferDao{
 //            throw new DaoException("Data integrity violation", e);
 //        }
 //        return getTransferById(newTransferId);
-        return newtransfer; //here for the sake of happy intellij
+       return newtransfer; //here for the sake of happy intellij
+    }
+
+    @Override
+    public Transfer updateTransferStatus(long transferId, int newStatus) {
+        return null;
     }
 
     @Override
@@ -139,73 +144,12 @@ public class JdbcTransferDao implements TransferDao{
 
     private Transfer mapToTransfer(SqlRowSet sqlRowSet) {
         Transfer transfer = new Transfer();
-        transfer.setTransferStatus(sqlRowSet.getInt("transfer_status_desc"));
+        transfer.setTransferStatus(sqlRowSet.getInt("transfer_status_id"));
+        transfer.setTransferType(sqlRowSet.getInt("transfer_type_id"));
         transfer.setAccountFrom(userDao.getUserById(sqlRowSet.getInt("fromUser")).getId());
-        // should transfer hold the whole user class or just the id
-        //ie User userFrom and User userTo
-
         transfer.setAccountTo(userDao.getUserById(sqlRowSet.getInt("toUser")).getId());
         transfer.setAmount(sqlRowSet.getBigDecimal("amount"));
         transfer.setId(sqlRowSet.getLong("transfer_id"));
         return transfer;
-
     }
-
-        // old code, will delete if not using
-
-//    @Override
-//    public List<Transfer> getTransfersReceivedById(int accountTo) {
-//        List<Transfer> transfers = new ArrayList<>();
-//        String sql = "SELECT * FROM transfer " +
-//                "WHERE account_to = ?;";
-//        try {
-//            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountTo);
-//            if (results.next()) {
-//                Transfer transfer = mapToTransfer(results);
-//                transfers.add(transfer);
-//            }
-//        } catch (CannotGetJdbcConnectionException e) {
-//            throw new DaoException("Unable to connect to server or database", e);
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DaoException("Data integrity violation", e);
-//        } return transfers;
-//    }
-
-//    @Override
-//    public List<Transfer> getTransfersSentById(int accountFrom) {
-//        List<Transfer> transfers = new ArrayList<>();
-//        String sql = "SELECT * FROM transfer " +
-//                "WHERE account_from = ?;";
-//        try {
-//            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountFrom);
-//            if (results.next()) {
-//                Transfer transfer = mapToTransfer(results);
-//                transfers.add(transfer);
-//            }
-//        } catch (CannotGetJdbcConnectionException e) {
-//            throw new DaoException("Unable to connect to server or database", e);
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DaoException("Data integrity violation", e);
-//        } return transfers;
-//    }
-
-
-    // may not need all transfer methods check later
-    //   @Override
-//    public List<Transfer> getTransfers(int accountId) {
-//        List<Transfer> transfers = new ArrayList<>();
-//        String sql = "SELECT * FROM transfers " +
-//                "WHERE account_from = ? OR account_to = ?;";
-//        try {
-//            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId, accountId);
-//            if (results.next()) {
-//                Transfer transfer = mapToTransfer(results);
-//                transfers.add(transfer);
-//            }
-//        } catch (CannotGetJdbcConnectionException e) {
-//            throw new DaoException("Unable to connect to server or database", e);
-//        } catch (DataIntegrityViolationException e) {
-//            throw new DaoException("Data integrity violation", e);
-//        } return transfers;
-//    }
 }

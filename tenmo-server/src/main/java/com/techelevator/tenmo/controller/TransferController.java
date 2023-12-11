@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @PreAuthorize("isAuthenticated()")
@@ -28,18 +29,23 @@ public class TransferController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/transfer", method = RequestMethod.PUT)
-    public Transfer createTransfer(Principal principal, @RequestBody TransferDto transferDto){
+    public Transfer createTransfer(Principal principal, @Valid @RequestBody TransferDto transferDto){
         User loggedInUser = userDao.getUserByUsername(principal.getName());
 
-        Transfer createdTransfer;
+        Transfer createdTransfer = null;
         try{
-            createdTransfer = transferService.createTransferFromDto(loggedInUser, transferDto);
-            if (createdTransfer == null){
-                //Create custom exception
-                throw new RuntimeException();
-            } else {
-                accountService.transferFunds(createdTransfer);
-            }
+            // createdTransfer =  transferService.transferMoney() only line needed, solve rest in service
+
+
+//            createdTransfer = transferService.createTransferFromDto(loggedInUser, transferDto);
+////            boolean isSending = transferDto.getType().equalsIgnoreCase("sending");
+//
+//            if (createdTransfer == null){
+//                //Create custom exception
+//                throw new RuntimeException();
+//            } else if (isSending){
+//                accountService.transferFunds(createdTransfer);
+//            }
         }  catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

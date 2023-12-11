@@ -1,6 +1,8 @@
 package com.techelevator.tenmo.model;
 
 public class TransferType {
+    public static final int SEND_MONEY = 1;
+    public static final int REQUEST_MONEY = 2;
     private int transfer_type_id;
 
     public TransferType(int transfer_type_id) {
