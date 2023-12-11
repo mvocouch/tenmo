@@ -19,7 +19,6 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Account updateAccountBalance(Account accountToUpdate) {
-        Account account = null;
         BigDecimal updatedBalance = accountToUpdate.getBalance();
         int accountId = accountToUpdate.getAccount_id();
 
