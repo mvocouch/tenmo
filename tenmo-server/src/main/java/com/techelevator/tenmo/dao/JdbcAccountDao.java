@@ -48,7 +48,7 @@ public class JdbcAccountDao implements AccountDao {
             throw new DaoException("Unable to update account balance", e);
         }
         return currentAccount;
-    }
+    } //why
 
     @Override
     public Account getAccountById(int accountId) {
