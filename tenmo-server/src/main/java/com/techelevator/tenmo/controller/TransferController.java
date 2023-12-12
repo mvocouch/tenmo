@@ -34,18 +34,7 @@ public class TransferController {
 
         Transfer createdTransfer = null;
         try{
-            // createdTransfer =  transferService.transferMoney() only line needed, solve rest in service
-
-
-//            createdTransfer = transferService.createTransferFromDto(loggedInUser, transferDto);
-////            boolean isSending = transferDto.getType().equalsIgnoreCase("sending");
-//
-//            if (createdTransfer == null){
-//                //Create custom exception
-//                throw new RuntimeException();
-//            } else if (isSending){
-//                accountService.transferFunds(createdTransfer);
-//            }
+            createdTransfer =  transferService.initializeTransfer(loggedInUser, transferDto);
         }  catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
