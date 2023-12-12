@@ -33,8 +33,9 @@ public class TransferServiceImpl implements TransferService{
     }
     public Transfer initializeTransfer(User loggedInUser, TransferDto transferDto) {
         Transfer transfer = createTransferFromDto(loggedInUser, transferDto);
-        accountService.transferFunds(transfer);
         //transferDao.addTransfer(transfer);
+        accountService.transferFunds(transfer);
+
         return transfer;
     }
 }
