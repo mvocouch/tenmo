@@ -24,7 +24,7 @@ public class TransferServiceImpl implements TransferService{
     private Transfer createTransferFromDto(User loggedInUser, TransferDto transferDto) {
         Transfer transfer = new Transfer();
         int defaultStatusPending = 1;
-
+        // note from steven, we should set a transfer type here as well?
         Account senderAccount = accountDao.getAccountByUserId(loggedInUser.getId());
         Account account = accountDao.getAccountByUserId(transferDto.getUserId());
         transfer.setTransferStatus(defaultStatusPending);
