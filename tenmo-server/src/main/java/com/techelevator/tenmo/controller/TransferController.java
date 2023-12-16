@@ -42,4 +42,17 @@ public class TransferController {
 
         return createdTransfer;
     }
+
+    @RequestMapping(path = "/transfer/{transferId}", method = RequestMethod.PUT)
+    public Transfer acceptTransfer(Principal principal, @PathVariable Long transferId) {
+        User loggedInUser = userDao.getUserByUsername(principal.getName());
+        Transfer acceptedTransfer = null;
+        try {
+
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return acceptedTransfer;
+    }
 }
