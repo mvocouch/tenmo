@@ -26,12 +26,25 @@ public class TransferServiceImpl implements TransferService{
 
     private Transfer createTransferFromDto(User loggedInUser, TransferDto transferDto) {
         Transfer transfer = new Transfer();
-        Account senderAccount = accountDao.getAccountByUserId(loggedInUser.getId());
-        Account account = accountDao.getAccountByUserId(transferDto.getUserId());
+        int transferType = transferDto.getType();
+        Account accountSending;
+        Account accountReceiving;
+
+
+        if (transferType == TransferType.SEND_MONEY){
+            accountSending = accountDao.getAccountByUserId(loggedInUser.getId());
+            accountReceiving = accountDao.getAccountByUserId(transferDto.getUserId());
+        } else if (transferType == TransferType.REQUEST_MONEY) {
+            accountSending = accountDao.getAccountByUserId(transferDto.getUserId());
+            accountReceiving = accountDao.getAccountByUserId(loggedInUser.getId());
+        } else {
+            throw new RuntimeException("Invalid transfer type.");
+        }
+
         transfer.setTransferStatus(TransferStatus.PENDING);
         transfer.setTransferType(transferDto.getType());
-        transfer.setAccountTo(account.getAccount_id());
-        transfer.setAccountFrom(senderAccount.getAccount_id());
+        transfer.setAccountTo(accountReceiving.getAccount_id());
+        transfer.setAccountFrom(accountSending.getAccount_id());
         transfer.setAmount(transferDto.getAmount());
 
         return transfer;
