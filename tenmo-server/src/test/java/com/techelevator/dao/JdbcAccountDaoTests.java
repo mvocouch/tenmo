@@ -54,10 +54,13 @@ public class JdbcAccountDaoTests extends BaseDaoTests {
     }
 
     @Test
-    public void getAccountBalance_given_correct_id_returns_balance(){
+    public void getAccountBalance_given_correct_id_returns_balance() {
         BigDecimal accountBalance = sut.getAccountBalance(ACCOUNT_2.getUser_id());
-        Assert.assertEquals(ACCOUNT_2.getBalance(), accountBalance);
+        int comparisonResult = ACCOUNT_2.getBalance().compareTo(accountBalance);
+        Assert.assertEquals(0, comparisonResult);
     }
+
+
 
 //    @Test
 //    public void updateAccountBalance_CorrectBalance() {

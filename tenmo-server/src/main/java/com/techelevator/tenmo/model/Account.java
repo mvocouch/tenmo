@@ -3,6 +3,7 @@ package com.techelevator.tenmo.model;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Account {
     private int account_id;
@@ -74,6 +75,14 @@ public class Account {
 
         balance = balance.subtract(transferAmount);
         return true;
+    }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return account_id == account.account_id &&
+                Objects.equals(user_id, account.user_id) &&
+               balance.compareTo(account.balance) == 0;
     }
 
 
