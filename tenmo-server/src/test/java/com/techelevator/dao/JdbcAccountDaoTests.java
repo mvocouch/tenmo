@@ -13,8 +13,8 @@ import java.util.List;
 public class JdbcAccountDaoTests extends BaseDaoTests {
 
     protected static final Account ACCOUNT_1 = new Account(2001, 1001, BigDecimal.valueOf(1500));
-    protected static final Account ACCOUNT_2 = new Account(2002, 1002, BigDecimal.valueOf(450));
-    private static final Account ACCOUNT_3 = new Account(2003, 1003, BigDecimal.valueOf(10));
+    protected static final Account ACCOUNT_2 = new Account(2002, 1002, BigDecimal.valueOf(1000));
+    private static final Account ACCOUNT_3 = new Account(2003, 1003, BigDecimal.valueOf(500));
     private AccountDao sut;
 
     @Before
