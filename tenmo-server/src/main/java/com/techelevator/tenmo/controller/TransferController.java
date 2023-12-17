@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.controller;
 
+import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.dto.TransferDto;
 import com.techelevator.tenmo.model.Transfer;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -20,11 +22,20 @@ public class TransferController {
     private final TransferService transferService;
     private final AccountService accountService;
     private final UserDao userDao;
+    private final TransferDao transferDao;
 
-    public TransferController(TransferService transferService, AccountService accountService, UserDao userDao) {
+    public TransferController(TransferService transferService, AccountService accountService, UserDao userDao, TransferDao transferDao) {
         this.transferService = transferService;
         this.accountService = accountService;
         this.userDao = userDao;
+        this.transferDao = transferDao;
+    }
+
+    @RequestMapping(path = "/transfer/pending", method = RequestMethod.GET)
+    public List<Transfer> getPendingTransfers(Principal principal){
+        User loggedInUser = userDao.getUserByUsername(principal.getName());
+        //Ask Srdan if we should try/catch here
+        return transferDao.getPendingTransfersForUser(loggedInUser.getId());
     }
 
     @ResponseStatus(HttpStatus.CREATED)

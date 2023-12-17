@@ -2,6 +2,7 @@ package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferStatus;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -43,6 +44,28 @@ public class JdbcTransferDao implements TransferDao{
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         } return transfers;
+    }
+
+    @Override
+    public List<Transfer> getPendingTransfersForUser(int userId){
+        List<Transfer> transfers = new ArrayList<>();
+        String sql = SQL_SELECT_TRANSFER +
+                "WHERE (account_from IN (SELECT account_id FROM account WHERE user_id = ?) " +
+                "OR  account_to IN (SELECT account_id FROM account WHERE user_id = ?))" +
+                "AND transfer_status_id = ?;";
+
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId, TransferStatus.PENDING);
+            while (results.next()) {
+                Transfer transfer = mapToTransfer(results);
+                transfers.add(transfer);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return transfers;
     }
 
     @Override
