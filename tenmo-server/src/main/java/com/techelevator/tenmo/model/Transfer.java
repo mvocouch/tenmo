@@ -8,6 +8,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 public class Transfer {
     @NotNull
@@ -26,15 +27,17 @@ public class Transfer {
     @DecimalMax(value = "9999999999999.99")
     private BigDecimal amount;
 
-    public Transfer(long id, int transfer_status, int accountFrom, int accountTo, BigDecimal amount) {
+    public Transfer(long id,  int transferType, int transfer_status, int accountFrom, int accountTo, BigDecimal amount ) {
         this.id = id;
         this.transferStatus = transfer_status;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.amount = amount;
+        this.transferType = transferType;
     }
 
-    public Transfer(int transfer_status, int accountFrom, int accountTo, BigDecimal amount) {
+    public Transfer(int transferType, int transfer_status, int accountFrom, int accountTo, BigDecimal amount) {
+        this.transferType = transferType;
         this.transferStatus = transfer_status;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
@@ -90,6 +93,19 @@ public class Transfer {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount.setScale(2, RoundingMode.HALF_DOWN);
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transfer transfer = (Transfer) o;
+        return id == transfer.id &&
+                Objects.equals(accountFrom, transfer.accountFrom);
+
+//                activated == user.activated &&
+//                Objects.equals(username, user.username) &&
+//                Objects.equals(password, user.password) &&
+//                Objects.equals(authorities, user.authorities);
     }
 
 
