@@ -29,7 +29,7 @@ public class TransferServiceImpl implements TransferService{
         Account senderAccount = accountDao.getAccountByUserId(loggedInUser.getId());
         Account account = accountDao.getAccountByUserId(transferDto.getUserId());
         transfer.setTransferStatus(TransferStatus.PENDING);
-        transfer.setTransferType(TransferType.SEND_MONEY);
+        transfer.setTransferType(transferDto.getType());
         transfer.setAccountTo(account.getAccount_id());
         transfer.setAccountFrom(senderAccount.getAccount_id());
         transfer.setAmount(transferDto.getAmount());
@@ -38,9 +38,10 @@ public class TransferServiceImpl implements TransferService{
     }
     public Transfer initializeTransfer(User loggedInUser, TransferDto transferDto) {
         Transfer transfer = createTransferFromDto(loggedInUser, transferDto);
-        transferDao.addTransfer(transfer);
-        accountService.transferFunds(transfer);
-
+        transfer = transferDao.addTransfer(transfer);
+        if (transfer.getTransferType() == TransferType.SEND_MONEY){
+            accountService.transferFunds(transfer);
+        }
         return transfer;
     }
 
@@ -49,7 +50,8 @@ public class TransferServiceImpl implements TransferService{
             Transfer transfer = transferDao.getTransferById(transferId);
 
             if (transfer != null && transfer.getTransferStatus() == (TransferStatus.PENDING)) {
-                if (loggedInUser.getId() == transfer.getAccountTo()) {
+                Account loggedInUserAccount = accountDao.getAccountByUserId(loggedInUser.getId());
+                if (loggedInUserAccount.getAccount_id() == transfer.getAccountTo()) {
                     transfer.setTransferStatus(TransferStatus.APPROVED);
                     accountService.transferFunds(transfer);
                     transferDao.updateTransferStatus(transferId, TransferStatus.APPROVED);

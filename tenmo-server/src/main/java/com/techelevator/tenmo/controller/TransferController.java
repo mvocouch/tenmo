@@ -28,7 +28,7 @@ public class TransferController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/transfer", method = RequestMethod.PUT)
+    @RequestMapping(path = "/transfer", method = RequestMethod.POST)
     public Transfer createTransfer(Principal principal, @Valid @RequestBody TransferDto transferDto){
         User loggedInUser = userDao.getUserByUsername(principal.getName());
 
@@ -48,7 +48,7 @@ public class TransferController {
         User loggedInUser = userDao.getUserByUsername(principal.getName());
         Transfer acceptedTransfer = null;
         try {
-
+            transferService.acceptTransfer(loggedInUser, transferId);
         } catch (Exception e){
             System.out.println(e.getMessage());
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST);

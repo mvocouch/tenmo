@@ -6,9 +6,9 @@ public class TransferDto {
     // user Id depends on who is receiving learned from type
     private final int userId;
     private final BigDecimal amount;
-    private final String type;
+    private final int type;
 
-    public TransferDto(int userId, BigDecimal amount, String type) {
+    public TransferDto(int userId, BigDecimal amount, int type) {
         this.userId = userId;
         this.amount = amount;
         this.type = type;
@@ -22,7 +22,7 @@ public class TransferDto {
         return amount;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 }

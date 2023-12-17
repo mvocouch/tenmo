@@ -47,7 +47,7 @@ public class AccountServiceImpl implements AccountService{
             throw new DaoException("The account #" + accountFrom.getAccount_id() +
                     " has maxed out it's balance and cannot receive the allotted funds");
         } else {
-            //transferDao.updateTransferStatus(transfer.getId(), TransferStatus.APPROVED);
+            transferDao.updateTransferStatus(transfer.getId(), TransferStatus.APPROVED);
         }
         accountDao.updateAccountBalance(accountFrom);
         accountDao.updateAccountBalance(accountTo);
