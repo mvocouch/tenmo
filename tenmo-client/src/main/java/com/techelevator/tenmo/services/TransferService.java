@@ -6,7 +6,7 @@ public class TransferService extends AuthTokenService{
     public TransferService(String baseUrl) {
         this.baseUrl = baseUrl + "transfers/";
     }
-    public Transfer createTransfer(TransferDto transferDto) {
-
+    public Transfer createTransfer(Transfer transfer) {
+        return transfer;
     }
 }

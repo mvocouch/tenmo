@@ -16,20 +16,16 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao{
 
     private final JdbcTemplate jdbcTemplate;
-    private static final String SQL_SELECT_TRANSFER = "SELECT t.transfer_id, tt.transfer_type_desc, ts.transfer_status_desc, t.amount, " +
+    private static final String SQL_SELECT_TRANSFER = "SELECT t.transfer_id, t.transfer_type_id, t.transfer_status_id, t.amount, " +
             "aFrom.account_id AS fromAccount, aFrom.user_id AS fromUser, aFrom.balance AS fromBalance,  " +
             "aTo.account_id As toAccount, aTo.user_id AS toUser, aTo.balance AS toBalance " +
             "FROM transfer t " +
-            "JOIN transfer_type tt USING (transfer_type_id) " +
-            "JOIN transfer_status ts USING (transfer_status_id) " +
             "JOIN account aFrom ON t.account_from = aFrom.account_id " +
             "JOIN account aTo ON t.account_to = aTo.account_id ";
 
 
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-
-
     }
 
 
@@ -75,7 +71,7 @@ public class JdbcTransferDao implements TransferDao{
     String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
             "VALUES ( ?, ?, ?, ?, ?) RETURNING transfer_id;";
         try {
-            int newTransferId = jdbcTemplate.queryForObject(sql, Integer.class,  newtransfer.getTransferType(), newtransfer.getTransferStatus(), newtransfer.getAccountFrom(), newtransfer.getAccountTo(), newtransfer.getAmount());
+            int newTransferId = jdbcTemplate.update(sql, Integer.class,  newtransfer.getTransferType(), newtransfer.getTransferStatus(), newtransfer.getAccountFrom(), newtransfer.getAccountTo(), newtransfer.getAmount());
             return getTransferById(newTransferId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
