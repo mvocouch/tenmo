@@ -8,9 +8,12 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class JdbcTransferDaoTests extends BaseDaoTests{
-    //protected static final Transfer TRANSFER_1 = new Transfer(1001, 1, 1, 1, 2,  1500);
+    protected static final Transfer TRANSFER_1 = new Transfer(1001, 1, 1, 2,  BigDecimal.valueOf(1500));
+    //protected static final Transfer TRANSFER_2 = new Transfer(1002, 1, 1, 2,  BigDecimal.valueOf(1000));
+    protected static final Transfer TRANSFER_3 = new Transfer(1003, 1, 1, 2,  BigDecimal.valueOf(500));
     private JdbcTransferDao sut;
 
     @Before
@@ -25,6 +28,11 @@ public class JdbcTransferDaoTests extends BaseDaoTests{
     }
     @Test
     public void getTransfers_returns_all_transfers() {
+        List<Transfer> transfers = sut.findAll();
+        Assert.assertNotNull(transfers);
+        Assert.assertEquals(2, transfers.size());
+        Assert.assertEquals(TRANSFER_1, transfers.get(0));
+        Assert.assertEquals(TRANSFER_3, transfers.get(1));
 
     }
 }

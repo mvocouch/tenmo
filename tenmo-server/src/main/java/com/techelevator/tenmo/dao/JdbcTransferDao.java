@@ -71,7 +71,7 @@ public class JdbcTransferDao implements TransferDao{
     String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
             "VALUES ( ?, ?, ?, ?, ?) RETURNING transfer_id;";
         try {
-            int newTransferId = jdbcTemplate.update(sql, Integer.class,  newtransfer.getTransferType(), newtransfer.getTransferStatus(), newtransfer.getAccountFrom(), newtransfer.getAccountTo(), newtransfer.getAmount());
+            int newTransferId = jdbcTemplate.queryForObject(sql, Integer.class,  newtransfer.getTransferType(), newtransfer.getTransferStatus(), newtransfer.getAccountFrom(), newtransfer.getAccountTo(), newtransfer.getAmount());
             return getTransferById(newTransferId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
