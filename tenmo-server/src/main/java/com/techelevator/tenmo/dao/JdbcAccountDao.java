@@ -85,6 +85,26 @@ public class JdbcAccountDao implements AccountDao {
         }
         return account;
     }
+    @Override
+    public BigDecimal getAccountBalance(int userId) {
+        BigDecimal balance = null;
+        String sql = "SELECT balance from account " +
+                "WHERE user_id = ?;";
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            if (results.next()) {
+                balance = results.getBigDecimal("balance");
+            }
+
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return balance;
+
+    }
+
 
     private Account mapToAccount(SqlRowSet sqlRowSet) {
         Account account = new Account();
