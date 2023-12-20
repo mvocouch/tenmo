@@ -107,7 +107,20 @@ public class App {
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+		Transfer[] transfers = accountService.retrieveAllTransfers();
+        if (transfers != null) {
+            consoleService.printPendingTransferMenu(transfers, currentUser.getUser(), userService);
+            int selectedTransferId = consoleService.promptForInt("Please select Id of transfer you wish to accept/reject (0 to cancel): ");
+            if (selectedTransferId != 0) {
+                consoleService.printAcceptRejectMenu();
+                int menuSelection = consoleService.promptForMenuSelection("Please select an option: ");
+                if (menuSelection == 1) {
+                    //make a method for approval
+                } else if (menuSelection == 2) {
+                    //make a method for rejection
+                }
+            }
+        }
 	}
 
 	private void sendBucks() {

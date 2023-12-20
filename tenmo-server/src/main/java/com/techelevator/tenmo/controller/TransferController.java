@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.dto.TransferDto;
+import com.techelevator.tenmo.dto.TransferStatusUpdateDto;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.service.AccountService;
@@ -54,8 +55,11 @@ public class TransferController {
         return createdTransfer;
     }
 
+    //We should change this method to an updateTransfer method that can change it
+    //to Approved or Rejected based on the TransferStatusUpdateDto made in client
+    //the Dto just contains the ID of the transfer status
     @RequestMapping(path = "/transfer/{transferId}", method = RequestMethod.PUT)
-    public Transfer acceptTransfer(Principal principal, @PathVariable Long transferId) {
+    public Transfer acceptTransfer(Principal principal, @PathVariable Long transferId, @RequestBody TransferStatusUpdateDto dto) {
         User loggedInUser = userDao.getUserByUsername(principal.getName());
         Transfer acceptedTransfer = null;
         try {

@@ -86,11 +86,32 @@ public class ConsoleService {
         scanner.nextLine();
     }
 
+    public void printAcceptRejectMenu() {
+        System.out.println();
+        System.out.println("1: Approve");
+        System.out.println("2: Reject");
+        System.out.println("0: neither Approve nor Reject");
+        System.out.println();
+    }
+
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
     }
     public void printTransferMenu(Transfer[] transfers, User currentUser) {
         // will print case 5 from the read me
+    }
+    public void printPendingTransferMenu(Transfer[] transfers, User currentUser, UserService userService) {
+        // will print case 8 from read me
+        // will need formatting here, steven not know how
+        //feels unethical but had to pass userService in here to get the name of the account from
+        for (Transfer t: transfers) {
+            if (t.getTransferStatus() == 1 && t.getAccountTo() == currentUser.getId()) {
+                //userService.getUser(t.getAccountFrom()).getUsername();
+                //t.getId()
+                //t.getAmount()
+                //needs to be formatted somehow
+            }
+        }
     }
 
 }
