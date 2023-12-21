@@ -9,12 +9,11 @@ public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
 
-    private final ConsoleService consoleService = new ConsoleService();
+    private final UserService userService = new UserService(API_BASE_URL);
+    private final ConsoleService consoleService = new ConsoleService(userService);
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService(API_BASE_URL);
-    private final UserService userService = new UserService(API_BASE_URL);
     private final TransferService transferService = new TransferService(API_BASE_URL);
-
     private AuthenticatedUser currentUser;
 
     public static void main(String[] args) {
@@ -105,7 +104,7 @@ public class App {
 		// TODO Auto-generated method stub
 		Transfer[] transfers = accountService.retrieveAllTransfers();
         if (transfers != null) {
-            consoleService.printPendingTransferMenu(transfers, currentUser.getUser(), userService);
+            consoleService.printPendingTransferMenu(transfers, currentUser.getUser());
             int selectedTransferId = consoleService.promptForInt("Please select Id of transfer you wish to accept/reject (0 to cancel): ");
             if (selectedTransferId != 0) {
                 consoleService.printAcceptRejectMenu();

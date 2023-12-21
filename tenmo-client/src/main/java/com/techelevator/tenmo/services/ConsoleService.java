@@ -1,17 +1,22 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.MenuColumn;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
 public class ConsoleService {
-    private final int COLUMN_WIDTH = 12;
-
+    private UserService userService;
     private final Scanner scanner = new Scanner(System.in);
+
+    public ConsoleService(UserService userService){
+        this.userService = userService;
+    }
 
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
@@ -91,8 +96,8 @@ public class ConsoleService {
         System.out.println();
         System.out.println("1: Approve");
         System.out.println("2: Reject");
-        System.out.println("0: neither Approve nor Reject");
-        System.out.println();
+        System.out.println("0: Don't approve or reject");
+        printSeparator(9);
     }
 
     public void printErrorMessage() {
@@ -101,38 +106,98 @@ public class ConsoleService {
     public void printTransferMenu(Transfer[] transfers, User currentUser) {
         // will print case 5 from the read me
     }
-    public void printPendingTransferMenu(Transfer[] transfers, User currentUser, UserService userService) {
-        // will print case 8 from read me
-        // will need formatting here, steven not know how
-        //feels unethical but had to pass userService in here to get the name of the account from
-        for (Transfer t: transfers) {
-            if (t.getTransferStatus() == 1 && t.getAccountTo() == currentUser.getId()) {
-                //userService.getUser(t.getAccountFrom()).getUsername();
-                //t.getId()
-                //t.getAmount()
-                //needs to be formatted somehow
+
+    public void printPendingTransferMenu(Transfer[] transfers, User currentUser) {
+        List<String> ids = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        List<String> amounts = new ArrayList<>();
+
+        for (Transfer transfer: transfers) {
+            if (transfer.getTransferStatus() == 1 && transfer.getAccountTo() == currentUser.getId()) {
+                ids.add(String.valueOf(transfer.getId()));
+                names.add(userService.getUser(transfer.getAccountFrom()).getUsername());
+                amounts.add(String.valueOf(transfer.getAmount()));
             }
         }
+
+        List<MenuColumn> columns = new ArrayList<>();
+        columns.add(new MenuColumn("ID", 12, ids));
+        columns.add(new MenuColumn("To", 12, names));
+        columns.add(new MenuColumn("Amount", 24, amounts));
+
+        printTable("TRANSFERS", columns);
     }
 
     public void printUserMenu(User[] users) {
-        //some formatting following case 4/7 both use same layout
-        printSeperator(43);
-        System.out.println("Users");
-        // this is formatting right :)
-        System.out.println("ID           NAME");
-        printSeperator(43);
-        for (User u: users) {
-            String leftmostColumn = String.valueOf(u.getId());
-            String whitespace = getWhitespace(COLUMN_WIDTH - leftmostColumn.length());
-            System.out.println( leftmostColumn + whitespace +  u.getUsername());
+        List<String> ids = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+
+        for (User user : users){
+            ids.add(String.valueOf(user.getId()));
+            names.add(user.getUsername());
         }
-        printSeperator(9);
-        System.out.println();
+
+        List<MenuColumn> columns = new ArrayList<>();
+        columns.add(new MenuColumn("ID", 12, ids));
+        columns.add(new MenuColumn("NAME", 12, names));
+
+        printTable("USERS", columns);
+//        //some formatting following case 4/7 both use same layout
+//        printSeparator(43);
+//        System.out.println("Users");
+//        // this is formatting right :)
+//        System.out.println("ID           NAME");
+//        printSeparator(43);
+//        for (User u: users) {
+//            String leftmostColumn = String.valueOf(u.getId());
+//            String whitespace = getWhitespace(12 - leftmostColumn.length());
+//            System.out.println( leftmostColumn + whitespace +  u.getUsername());
+//        }
+//        printSeparator(9);
+//        System.out.println();
+    }
+
+    private void printTable(String menuTitle, List<MenuColumn> columns){
+        StringBuilder titleRow = new StringBuilder();
+        List<StringBuilder> rows = getTableRows(titleRow, columns);
+
+        printSeparator(43);
+        System.out.println(menuTitle);
+        System.out.println(titleRow);
+        printSeparator(43);
+        for (StringBuilder row : rows){
+            System.out.println(row);
+        }
+        printSeparator(9);
+    }
+
+    private List<StringBuilder> getTableRows(StringBuilder titleRow, List<MenuColumn> columns){
+        int numberOfRows = columns.get(0).getNumberOfRows();
+        List<StringBuilder> rows = new ArrayList<>();
+
+        for (int i = 0; i < numberOfRows; i++){
+            rows.add(new StringBuilder());
+        }
+
+        for (MenuColumn column : columns){
+            titleRow.append(column.getTitle());
+            String whitespace = getWhitespace(column.getWhiteSpaceLength());
+            titleRow.append(whitespace);
+
+            for (int i = 0; i < column.getNumberOfRows(); i++){
+                String rowContent = column.getRows().get(i);
+                StringBuilder menuRow = rows.get(i);
+
+                menuRow.append(rowContent);
+                whitespace = getWhitespace(column.getWhiteSpaceLength(i));
+                menuRow.append(whitespace);
+            }
+        }
+        return rows;
     }
 
     //used to make the --------- is case formatting
-    public void printSeperator(int length) {
+    public void printSeparator(int length) {
         System.out.println(getRepeatedCharacter('-', length));
     }
 
