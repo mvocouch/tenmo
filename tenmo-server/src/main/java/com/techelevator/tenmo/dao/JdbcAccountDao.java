@@ -51,11 +51,10 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public Account getAccountByUserId(int userId) {
         Account account = null;
-        String sql = "SELECT * from account " +
-                "WHERE user_id = ?;";
+        String sql = "select account_id, user_id, balance from account where user_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-            if (results.next()) {
+            while (results.next()) {
                 account = mapToAccount(results);
             }
         } catch (CannotGetJdbcConnectionException e) {

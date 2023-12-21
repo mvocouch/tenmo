@@ -84,7 +84,22 @@ public class TransferServiceImpl implements TransferService{
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "An error occurred while processing the transfer", e);
         }
-
     }
+//    public Transfer rejectTransfer(User loggedInUser, Long transferId){
+//        Transfer transfer = transferDao.getTransferById(transferId);
+//        if (transfer != null && transfer.getTransferStatus() == TransferStatus.PENDING) {
+//            Account loggedInUserAccount = accountDao.getAccountByUserId(loggedInUser.getId());
+//            if(loggedInUserAccount.getAccount_id() == transfer.getAccountTo()) {
+//                transfer.setTransferType(TransferStatus.REJECTED);
+//                transferDao.updateTransferStatus(transferId, TransferStatus.REJECTED);
+//                return transferDao.getTransferById(transferId);
+//            } else {
+//                throw new TransferExceptions.TransferUnauthorizedException("Unauthorized to reject this transfer.");
+//            }
+//
+//        } else {
+//            throw new TransferExceptions.TransferNotFoundException("Transfer not found or not pending.");
+//        }
+//    }
 
 }
