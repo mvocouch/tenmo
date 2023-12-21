@@ -5,6 +5,7 @@ import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.dto.TransferDto;
 import com.techelevator.tenmo.dto.TransferStatusUpdateDto;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferStatus;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.service.AccountService;
 import com.techelevator.tenmo.service.TransferService;
@@ -59,15 +60,20 @@ public class TransferController {
     //to Approved or Rejected based on the TransferStatusUpdateDto made in client
     //the Dto just contains the ID of the transfer status
     @RequestMapping(path = "/transfer/{transferId}", method = RequestMethod.PUT)
-    public Transfer acceptTransfer(Principal principal, @PathVariable Long transferId, @RequestBody TransferStatusUpdateDto dto) {
+    public Transfer updateTransferStatus(Principal principal, @PathVariable Long transferId, @RequestBody TransferStatusUpdateDto dto) {
         User loggedInUser = userDao.getUserByUsername(principal.getName());
-        Transfer acceptedTransfer = null;
+        Transfer updatedTransfer = null;
         try {
-            transferService.acceptTransfer(loggedInUser, transferId);
+            int newTransferStatus = dto.getTransferStatus();
+            if (newTransferStatus == TransferStatus.APPROVED) {
+                updatedTransfer = transferService.acceptTransfer(loggedInUser, transferId);
+            } else if (newTransferStatus == TransferStatus.REJECTED) {
+                updatedTransfer = transferService.rejectTransfer(loggedInUser, transferId);
+            }
         } catch (Exception e){
             System.out.println(e.getMessage());
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return acceptedTransfer;
+        return updatedTransfer;
     }
 }

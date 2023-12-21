@@ -7,5 +7,6 @@ import com.techelevator.tenmo.model.User;
 public interface TransferService {
     Transfer initializeTransfer(User loggedInUser, TransferDto transferDto);
     Transfer acceptTransfer(User loggedInUser, Long transferId);
+    Transfer rejectTransfer(User loggedInUser, Long transferId);
 }
 
