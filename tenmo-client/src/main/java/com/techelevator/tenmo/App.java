@@ -57,7 +57,12 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
-        if (currentUser == null) {
+        if (currentUser != null) {
+           String token = currentUser.getToken();
+           accountService.setAuthToken(token);
+           transferService.setAuthToken(token);
+           userService.setAuthToken(token);
+        } else {
             consoleService.printErrorMessage();
         }
     }
