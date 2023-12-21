@@ -58,13 +58,38 @@ public class TransferServiceImpl implements TransferService{
         return transfer;
     }
 
+    public Transfer rejectTransfer(User loggedInUser, Long transferId){
+        try {
+            Transfer transfer = transferDao.getTransferById(transferId);
+
+            if (isRequestValid(transfer)){
+                if (isUserAuthorized(loggedInUser, transfer)){
+                    transfer.setTransferStatus(TransferStatus.REJECTED);
+                    transferDao.updateTransferStatus(transferId, TransferStatus.REJECTED);
+                    return transfer;
+                } else {
+                    throw new TransferExceptions.TransferUnauthorizedException("Unauthorized to accept this transfer.");
+                }
+            } else {
+                throw new TransferExceptions.TransferNotFoundException("Transfer not found or not pending.");
+            }
+        } catch (DataAccessException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error accessing database", e);
+        } catch (TransferExceptions.TransferUnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage(), e);
+        } catch (TransferExceptions.TransferNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "An error occurred while processing the transfer", e);
+        }
+    }
+
     public Transfer acceptTransfer(User loggedInUser, Long transferId){
         try {
             Transfer transfer = transferDao.getTransferById(transferId);
 
-            if (transfer != null && transfer.getTransferStatus() == (TransferStatus.PENDING)) {
-                Account loggedInUserAccount = accountDao.getAccountByUserId(loggedInUser.getId());
-                if (loggedInUserAccount.getAccount_id() == transfer.getAccountTo()) {
+            if (isRequestValid(transfer)){
+                if (isUserAuthorized(loggedInUser, transfer)){
                     transfer.setTransferStatus(TransferStatus.APPROVED);
                     accountService.transferFunds(transfer);
                     transferDao.updateTransferStatus(transferId, TransferStatus.APPROVED);
@@ -102,4 +127,12 @@ public class TransferServiceImpl implements TransferService{
 //        }
 //    }
 
+    public boolean isUserAuthorized(User loggedInUser, Transfer transfer) {
+        Account loggedInUserAccount = accountDao.getAccountByUserId(loggedInUser.getId());
+        return loggedInUserAccount.getAccount_id() == transfer.getAccountFrom();
+    }
+
+    public boolean isRequestValid(Transfer transfer) {
+        return transfer != null && transfer.getTransferStatus() == (TransferStatus.PENDING);
+    }
 }

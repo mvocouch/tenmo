@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class ConsoleService {
+    private final int COLUMN_WIDTH = 12;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -115,26 +116,35 @@ public class ConsoleService {
     }
 
     public void printUserMenu(User[] users) {
-        //some formatting following case 5/7 both use same layout
+        //some formatting following case 4/7 both use same layout
         printSeperator(43);
         System.out.println("Users");
         // this is formatting right :)
         System.out.println("ID           NAME");
         printSeperator(43);
         for (User u: users) {
-            //again formatting i know :(
-            System.out.println(u.getId() + " " +  u.getUsername());
+            String leftmostColumn = String.valueOf(u.getId());
+            String whitespace = getWhitespace(COLUMN_WIDTH - leftmostColumn.length());
+            System.out.println( leftmostColumn + whitespace +  u.getUsername());
         }
         printSeperator(9);
-    }
-
-
-    //used to make the --------- is case formatting
-    public void printSeperator(int length) {
-        for (int i = 0; i < length; i++) {
-            System.out.print("-");
-        }
         System.out.println();
     }
 
+    //used to make the --------- is case formatting
+    public void printSeperator(int length) {
+        System.out.println(getRepeatedCharacter('-', length));
+    }
+
+    public String getWhitespace(int length){
+        return getRepeatedCharacter(' ', length);
+    }
+
+    public String getRepeatedCharacter(char character, int repeats){
+        StringBuilder repeatedCharacter = new StringBuilder();
+        for (int i = 0; i < repeats; i++) {
+            repeatedCharacter.append(character);
+        }
+        return repeatedCharacter.toString();
+    }
 }
