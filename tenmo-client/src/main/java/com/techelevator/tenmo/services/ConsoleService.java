@@ -114,4 +114,27 @@ public class ConsoleService {
         }
     }
 
+    public void printUserMenu(User[] users) {
+        //some formatting following case 5/7 both use same layout
+        printSeperator(43);
+        System.out.println("Users");
+        // this is formatting right :)
+        System.out.println("ID           NAME");
+        printSeperator(43);
+        for (User u: users) {
+            //again formatting i know :(
+            System.out.println(u.getId() + " " +  u.getUsername());
+        }
+        printSeperator(9);
+    }
+
+
+    //used to make the --------- is case formatting
+    public void printSeperator(int length) {
+        for (int i = 0; i < length; i++) {
+            System.out.print("-");
+        }
+        System.out.println();
+    }
+
 }

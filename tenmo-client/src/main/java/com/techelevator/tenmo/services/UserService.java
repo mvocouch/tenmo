@@ -7,16 +7,15 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
-public class UserService {
+public class UserService extends AuthTokenService{
 
-    private final String baseUrl;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public UserService(String url){
-        this.baseUrl = url;
+    public UserService(String baseUrl){
+        this.baseUrl = baseUrl + "users";
     }
 
-    private  String authToken = null;
+
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
@@ -67,6 +66,15 @@ public class UserService {
         }
         return success;
     }
+    public User[] getAllUsers() {
+        User[] users = null;
+        try {
+            ResponseEntity<User[]> response = restTemplate.exchange(baseUrl, HttpMethod.GET, makeAuthEntity(), User[].class);
+            users = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        } return users;
+    }
 
     private HttpEntity<User> makeUserEntity(User user) {
         HttpHeaders headers = new HttpHeaders();
@@ -75,11 +83,7 @@ public class UserService {
         return new HttpEntity<>(user, headers);
     }
 
-    private HttpEntity<Void> makeAuthEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authToken);
-        return new HttpEntity<>(headers);
-    }
+
 
 
 }
