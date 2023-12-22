@@ -101,8 +101,15 @@ public class App {
 	private void viewTransferHistory() {
         Transfer[] transfers = accountService.retrieveAllTransfers();
         if (transfers != null) {
-
+        consoleService.printTransferMenu(transfers, currentUser.getUser());
+        int selectTransferId = consoleService.promptForInt("Please enter transfer ID to see details (press 0 to cancel): ");
+        if (selectTransferId != 0) {
+            Transfer transfer = transferService.getTransferDetails(selectTransferId);
+            if (transfer != null) {
+                consoleService.printTransferDetails(transfer);
+            } else consoleService.printErrorMessage();
         }
+        } else consoleService.printErrorMessage();
 	}
 
 	private void viewPendingRequests() {
@@ -132,7 +139,7 @@ public class App {
             if (toUserId != 0) {
                 BigDecimal amount = consoleService.promptForBigDecimal("Please enter amount sent: ");
                 int fromUserId = currentUser.getUser().getId();
-                TransferDto dto = new TransferDto(fromUserId, toUserId, amount, TransferType.SEND);
+                TransferDto dto = new TransferDto(fromUserId, toUserId, amount, 2);
                 Transfer transfer = transferService.createTransfer(dto);
                 if (transfer != null) {
                     System.out.println(amount+" TENMO BUCKS were sent to user: " + toUserId);

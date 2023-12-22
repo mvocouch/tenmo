@@ -29,4 +29,13 @@ public class UserController {
     public List<User> getUsers(){
         return userDao.getUsers();
     }
+
+    @RequestMapping(path = "/users/account/{id}")
+    public User getUserByAccountId(@PathVariable int id) {
+        User user = userDao.getUserByAccountId(id);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", null);
+        }
+        return user;
+    }
 }

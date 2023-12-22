@@ -1,10 +1,7 @@
 package com.techelevator.tenmo.services;
 
 
-import com.techelevator.tenmo.model.MenuColumn;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -104,7 +101,26 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
     public void printTransferMenu(Transfer[] transfers, User currentUser) {
-        // will print case 5 from the read me
+        getRepeatedCharacter('-', 42);
+        System.out.println("Transfers");
+        System.out.format("%-10s%-23s%s%n","ID","From/To","Amount");
+        getRepeatedCharacter('-', 42);
+
+        for(Transfer t : transfers) {
+            String toFromString = buildToFromString(t, currentUser);
+            System.out.format("%-10s%-23s%s%n",t.getId(),toFromString,t.getAmount());
+        }
+        getRepeatedCharacter('-', 42);
+        System.out.println();
+    }
+    private String buildToFromString(Transfer transfer, User user) {
+        String toFromString = null;
+        if(user.getUsername().equals(userService.getUserByAccountId(transfer.getAccountTo()).getUsername())) {
+            toFromString = "From: " + userService.getUserByAccountId(transfer.getAccountFrom()).getUsername();
+        } else {
+            toFromString = "To: "+userService.getUserByAccountId(transfer.getAccountTo()).getUsername();
+        }
+        return toFromString;
     }
 
     public void printPendingTransferMenu(Transfer[] transfers, User currentUser) {
@@ -113,9 +129,10 @@ public class ConsoleService {
         List<String> amounts = new ArrayList<>();
 
         for (Transfer transfer: transfers) {
-            if (transfer.getTransferStatus() == 1 && transfer.getAccountTo() == currentUser.getId()) {
+            if (transfer.getTransferStatus() == TransferStatus.PENDING && userService.getUserByAccountId(transfer.getAccountTo()).getUsername().equals(currentUser.getUsername())) {
+
                 ids.add(String.valueOf(transfer.getId()));
-                names.add(userService.getUser(transfer.getAccountFrom()).getUsername());
+                names.add(userService.getUserByAccountId(transfer.getAccountFrom()).getUsername());
                 amounts.add(String.valueOf(transfer.getAmount()));
             }
         }
@@ -211,5 +228,29 @@ public class ConsoleService {
             repeatedCharacter.append(character);
         }
         return repeatedCharacter.toString();
+    }
+    public void printTransferDetails(Transfer transfer ) {
+        getRepeatedCharacter('-', 20);
+        System.out.println("Transfer Details");
+        getRepeatedCharacter('-', 20);
+        System.out.println("Id: "+transfer.getId());
+        System.out.println("From: "+ userService.getUserByAccountId(transfer.getAccountFrom()).getUsername());
+        System.out.println("To: "+ userService.getUserByAccountId(transfer.getAccountTo()).getUsername());
+        System.out.println("Type: " + (transfer.getTransferType() == TransferType.REQUEST ? "REQUEST" : "SEND"));
+        System.out.println("Status: "+ getTransferStatus(transfer.getTransferStatus()));
+        System.out.println("Amount: "+transfer.getAmount());
+    }
+    private String getTransferStatus(int transferStatusId) {
+        String status;
+        switch (transferStatusId) {
+            case 1 : status = "pending";
+            break;
+            case 2 : status = "accepted";
+                break;
+            case 3 : status = "rejected";
+                break;
+            default : status = "invalid transfer status";
+                break;
+        } return status;
     }
 }

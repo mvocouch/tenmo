@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 
 public class TransferDto {
 
-        private long userFrom;
-        private long userTo;
+        private int userFrom;
+        private int userTo;
         private BigDecimal amount;
         private int transferType;
 
-        public TransferDto(long fromUserId, long toUserId, BigDecimal amount, int transferType) {
+        public TransferDto(int fromUserId, int toUserId, BigDecimal amount, int transferType) {
             this.userFrom = fromUserId;
             this.userTo = toUserId;
             this.amount = amount;
@@ -20,7 +20,7 @@ public class TransferDto {
             return userFrom;
         }
 
-        public void setUserFrom(long userFrom) {
+        public void setUserFrom(int userFrom) {
             this.userFrom = userFrom;
         }
 
@@ -28,7 +28,7 @@ public class TransferDto {
             return userTo;
         }
 
-        public void setUserTo(long userTo) {
+        public void setUserTo(int userTo) {
             this.userTo = userTo;
         }
 

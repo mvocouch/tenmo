@@ -94,12 +94,12 @@ public class JdbcTransferDao implements TransferDao{
     String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
             "VALUES ( ?, ?, ?, ?, ?) RETURNING transfer_id;";
         try {
-            int newTransferId = jdbcTemplate.queryForObject(sql, Integer.class,  newtransfer.getTransferType(), newtransfer.getTransferStatus(), newtransfer.getAccountFrom(), newtransfer.getAccountTo(), newtransfer.getAmount());
+            long newTransferId = jdbcTemplate.queryForObject(sql, Long.class,  newtransfer.getTransferType(), newtransfer.getTransferStatus(), newtransfer.getAccountFrom(), newtransfer.getAccountTo(), newtransfer.getAmount());
             return getTransferById(newTransferId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Unable to connect to server or database", e);
         } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
+            throw new DaoException("Data integrity violation" + newtransfer.toString(), e);
         }  catch  (DataAccessException e) {
             throw new DaoException(e.getMessage());
         }

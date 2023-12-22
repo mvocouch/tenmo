@@ -23,8 +23,6 @@ public class Transfer {
     @NotNull
     private int accountTo;
     @NotNull
-    @DecimalMin(value = ".01")
-    @DecimalMax(value = "9999999999999.99")
     private BigDecimal amount;
 
     public Transfer(long id,  int transferType, int transfer_status, int accountFrom, int accountTo, BigDecimal amount ) {
@@ -108,5 +106,15 @@ public class Transfer {
 //                Objects.equals(authorities, user.authorities);
     }
 
-
+    @Override
+    public String toString() {
+        return "Transfer{" +
+                "id=" + id +
+                ", transferStatus=" + transferStatus +
+                ", transferType=" + transferType +
+                ", accountFrom=" + accountFrom +
+                ", accountTo=" + accountTo +
+                ", amount=" + amount +
+                '}';
+    }
 }

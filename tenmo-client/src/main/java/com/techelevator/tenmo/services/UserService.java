@@ -32,6 +32,15 @@ public class UserService extends AuthTokenService{
         }
         return  user;
     }
+    public User getUserByAccountId(int id) {
+        User user = null;
+        try {
+            ResponseEntity<User> response = restTemplate.exchange(baseUrl + "/account/" + id, HttpMethod.GET, makeAuthEntity(), User.class);
+            user = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        } return user;
+    }
 
     public User addUser(User newUser){
         HttpEntity<User> entity = makeUserEntity(newUser);

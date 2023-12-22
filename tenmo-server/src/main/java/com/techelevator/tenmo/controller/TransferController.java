@@ -2,7 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
-import com.techelevator.tenmo.dto.TransferDto;
+import com.techelevator.tenmo.dto.NewTransferDto;
 import com.techelevator.tenmo.dto.TransferStatusUpdateDto;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferStatus;
@@ -10,6 +10,7 @@ import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.service.AccountService;
 import com.techelevator.tenmo.service.TransferService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,9 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-
-@PreAuthorize("isAuthenticated()")
 @RestController
+@RequestMapping("/transfers")
+@PreAuthorize("isAuthenticated()")
 public class TransferController {
     private final TransferService transferService;
     private final AccountService accountService;
@@ -32,8 +33,18 @@ public class TransferController {
         this.userDao = userDao;
         this.transferDao = transferDao;
     }
+    @RequestMapping(value="/{id}", method = RequestMethod.GET)
+    public Transfer getTransfer(@PathVariable Long id, Principal principal) {
+        User user = userDao.getUserByUsername(principal.getName());
+        Transfer transfer = transferDao.getTransferById(id);
+       List<Transfer> transfers = transferDao.getTransfersForUser(user.getId());
+       if (transfers.contains(transfer)) {
+           return transfer;
+       } else throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
-    @RequestMapping(path = "/transfer/pending", method = RequestMethod.GET)
+    }
+
+    @RequestMapping(value = "pending", method = RequestMethod.GET)
     public List<Transfer> getPendingTransfers(Principal principal){
         User loggedInUser = userDao.getUserByUsername(principal.getName());
         //Ask Srdan if we should try/catch here
@@ -41,13 +52,14 @@ public class TransferController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/transfer", method = RequestMethod.POST)
-    public Transfer createTransfer(Principal principal, @Valid @RequestBody TransferDto transferDto){
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    public Transfer createTransfer(  @RequestBody NewTransferDto newTransferDto, Principal principal){
+        System.out.println("in transfer controller");
         User loggedInUser = userDao.getUserByUsername(principal.getName());
 
         Transfer createdTransfer = null;
         try{
-            createdTransfer =  transferService.initializeTransfer(loggedInUser, transferDto);
+            createdTransfer =  transferService.initializeTransfer(loggedInUser, newTransferDto);
         }  catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -59,7 +71,7 @@ public class TransferController {
     //We should change this method to an updateTransfer method that can change it
     //to Approved or Rejected based on the TransferStatusUpdateDto made in client
     //the Dto just contains the ID of the transfer status
-    @RequestMapping(path = "/transfer/{transferId}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{transferId}", method = RequestMethod.PUT)
     public Transfer updateTransferStatus(Principal principal, @PathVariable Long transferId, @RequestBody TransferStatusUpdateDto dto) {
         User loggedInUser = userDao.getUserByUsername(principal.getName());
         Transfer updatedTransfer = null;

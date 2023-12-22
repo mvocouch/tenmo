@@ -2,13 +2,11 @@ package com.techelevator.tenmo.service;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.TransferDao;
-import com.techelevator.tenmo.dto.TransferDto;
-import com.techelevator.tenmo.exception.DaoException;
+import com.techelevator.tenmo.dto.NewTransferDto;
 import com.techelevator.tenmo.exception.TransferExceptions;
 import com.techelevator.tenmo.model.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,33 +22,21 @@ public class TransferServiceImpl implements TransferService{
         this.accountService = accountService;
     }
 
-    private Transfer createTransferFromDto(User loggedInUser, TransferDto transferDto) {
-        Transfer transfer = new Transfer();
-        int transferType = transferDto.getType();
-        Account accountSending;
-        Account accountReceiving;
-
-
-        if (transferType == TransferType.SEND_MONEY){
-            accountSending = accountDao.getAccountByUserId(loggedInUser.getId());
-            accountReceiving = accountDao.getAccountByUserId(transferDto.getUserId());
-        } else if (transferType == TransferType.REQUEST_MONEY) {
-            accountSending = accountDao.getAccountByUserId(transferDto.getUserId());
-            accountReceiving = accountDao.getAccountByUserId(loggedInUser.getId());
-        } else {
-            throw new RuntimeException("Invalid transfer type.");
-        }
-
+    private Transfer createTransferFromDto(User loggedInUser, NewTransferDto newTransferDto) {
+        Transfer transfer = new Transfer(
+                newTransferDto.getTransferType(),
+                TransferStatus.PENDING,
+                accountDao.getAccountByUserId(newTransferDto.getUserFrom()).getAccount_id(),
+                accountDao.getAccountByUserId(newTransferDto.getUserTo()).getAccount_id(),
+                newTransferDto.getAmount()
+        );
         transfer.setTransferStatus(TransferStatus.PENDING);
-        transfer.setTransferType(transferDto.getType());
-        transfer.setAccountTo(accountReceiving.getAccount_id());
-        transfer.setAccountFrom(accountSending.getAccount_id());
-        transfer.setAmount(transferDto.getAmount());
+
 
         return transfer;
     }
-    public Transfer initializeTransfer(User loggedInUser, TransferDto transferDto) {
-        Transfer transfer = createTransferFromDto(loggedInUser, transferDto);
+    public Transfer initializeTransfer(User loggedInUser, NewTransferDto newTransferDto) {
+        Transfer transfer = createTransferFromDto(loggedInUser, newTransferDto);
         transfer = transferDao.addTransfer(transfer);
         if (transfer.getTransferType() == TransferType.SEND_MONEY){
             accountService.transferFunds(transfer);
