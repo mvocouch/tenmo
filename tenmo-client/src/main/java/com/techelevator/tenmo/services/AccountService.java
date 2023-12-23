@@ -32,11 +32,9 @@ public class AccountService extends AuthTokenService{
             ResponseEntity<Transfer[]> response = restTemplate.exchange(baseUrl + "transfers",
                     HttpMethod.GET, makeAuthEntity(), Transfer[].class);
             transfers = response.getBody();
-        }  catch (RestClientResponseException e) {
+        }  catch (RestClientResponseException | ResourceAccessException e) {
             e.getMessage();
-        } catch (ResourceAccessException e) {
-            e.getMessage();
-        } return transfers;
+        }
+        return transfers;
     }
-
 }

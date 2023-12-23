@@ -44,7 +44,7 @@ public class TransferController {
 
     }
 
-    @RequestMapping(value = "pending", method = RequestMethod.GET)
+    @RequestMapping(value = "/pending", method = RequestMethod.GET)
     public List<Transfer> getPendingTransfers(Principal principal){
         User loggedInUser = userDao.getUserByUsername(principal.getName());
         //Ask Srdan if we should try/catch here
@@ -72,11 +72,11 @@ public class TransferController {
     //to Approved or Rejected based on the TransferStatusUpdateDto made in client
     //the Dto just contains the ID of the transfer status
     @RequestMapping(path = "/{transferId}", method = RequestMethod.PUT)
-    public Transfer updateTransferStatus(Principal principal, @PathVariable Long transferId, @RequestBody TransferStatusUpdateDto dto) {
+    public Transfer updateTransferStatus(Principal principal, @PathVariable Long transferId, @RequestBody Integer status){//TransferStatusUpdateDto dto) {
         User loggedInUser = userDao.getUserByUsername(principal.getName());
         Transfer updatedTransfer = null;
         try {
-            int newTransferStatus = dto.getTransferStatus();
+            int newTransferStatus = status;
             if (newTransferStatus == TransferStatus.APPROVED) {
                 updatedTransfer = transferService.acceptTransfer(loggedInUser, transferId);
             } else if (newTransferStatus == TransferStatus.REJECTED) {

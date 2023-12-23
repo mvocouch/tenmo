@@ -1,5 +1,6 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.dto.TransferDto;
 import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 
@@ -94,7 +95,7 @@ public class App {
 	private void viewCurrentBalance() {
         BigDecimal balance = accountService.getBalance();
         if (balance != null) {
-            System.out.println("Your current balance is: " + balance);
+            System.out.println("Your account current balance is: $" + balance);
         } else consoleService.printErrorMessage();
 	}
 
@@ -114,7 +115,7 @@ public class App {
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		Transfer[] transfers = accountService.retrieveAllTransfers();
+		Transfer[] transfers = transferService.retrievePendingTransfers();//accountService.retrieveAllTransfers();
         if (transfers != null) {
             consoleService.printPendingTransferMenu(transfers, currentUser.getUser());
             int selectedTransferId = consoleService.promptForInt("Please select Id of transfer you wish to accept/reject (0 to cancel): ");
@@ -122,9 +123,9 @@ public class App {
                 consoleService.printAcceptRejectMenu();
                 int menuSelection = consoleService.promptForMenuSelection("Please select an option: ");
                 if (menuSelection == 1) {
-                    //make a method for approval
+                    transferService.updatePendingTransferStatus(selectedTransferId, TransferStatus.APPROVED);
                 } else if (menuSelection == 2) {
-                    //make a method for rejection
+                    transferService.updatePendingTransferStatus(selectedTransferId, TransferStatus.REJECTED);
                 }
             }
         }
@@ -135,7 +136,7 @@ public class App {
         User[] users = userService.getAllUsers();
         if (users != null) {
             consoleService.printUserMenu(users);
-            int toUserId = consoleService.promptForInt("Enter the Id of the User you wish to send bucks to (0 to cancel)");
+            int toUserId = consoleService.promptForInt("Enter the Id of the User you wish to send bucks to (0 to cancel):  ");
             if (toUserId != 0) {
                 BigDecimal amount = consoleService.promptForBigDecimal("Please enter amount sent: ");
                 int fromUserId = currentUser.getUser().getId();
@@ -155,9 +156,9 @@ public class App {
         User[] users = userService.getAllUsers();
         if (users != null) {
             consoleService.printUserMenu(users);
-            int fromUserId = consoleService.promptForInt("Enter the Id of the User you wish to request bucks from (0 to cancel)");
+            int fromUserId = consoleService.promptForInt("Enter the Id of the User you wish to request bucks from (0 to cancel): ");
             if (fromUserId != 0) {
-                BigDecimal amount = consoleService.promptForBigDecimal("Please enter amount sent: ");
+                BigDecimal amount = consoleService.promptForBigDecimal("Please enter amount to request: ");
                 int toUserId = currentUser.getUser().getId();
                 TransferDto dto = new TransferDto(fromUserId, toUserId, amount, TransferType.REQUEST);
                 Transfer transfer = transferService.createTransfer(dto);

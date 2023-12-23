@@ -101,17 +101,34 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
     public void printTransferMenu(Transfer[] transfers, User currentUser) {
-        getRepeatedCharacter('-', 42);
-        System.out.println("Transfers");
-        System.out.format("%-10s%-23s%s%n","ID","From/To","Amount");
-        getRepeatedCharacter('-', 42);
+        List<String> ids = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        List<String> amounts = new ArrayList<>();
 
-        for(Transfer t : transfers) {
-            String toFromString = buildToFromString(t, currentUser);
-            System.out.format("%-10s%-23s%s%n",t.getId(),toFromString,t.getAmount());
+        for (Transfer transfer: transfers) {
+            ids.add(String.valueOf(transfer.getId()));
+            names.add(buildToFromString(transfer, currentUser));
+            amounts.add("$"+String.valueOf(transfer.getAmount()));
         }
-        getRepeatedCharacter('-', 42);
-        System.out.println();
+
+        List<MenuColumn> columns = new ArrayList<>();
+        columns.add(new MenuColumn("ID", 12, ids));
+        columns.add(new MenuColumn("From/To", 24, names));
+        columns.add(new MenuColumn("Amount", 24, amounts));
+
+        printTable("Transfers", columns);
+
+        //        getRepeatedCharacter('-', 42);
+//        System.out.println("Transfers");
+//        System.out.format("%-10s%-23s%s%n","ID","From/To","Amount");
+//        getRepeatedCharacter('-', 42);
+//
+//        for(Transfer t : transfers) {
+//            String toFromString = buildToFromString(t, currentUser);
+//            System.out.format("%-10s%-23s%s%n",t.getId(),toFromString,t.getAmount());
+//        }
+//        getRepeatedCharacter('-', 42);
+//        System.out.println();
     }
     private String buildToFromString(Transfer transfer, User user) {
         String toFromString = null;
@@ -129,12 +146,9 @@ public class ConsoleService {
         List<String> amounts = new ArrayList<>();
 
         for (Transfer transfer: transfers) {
-            if (transfer.getTransferStatus() == TransferStatus.PENDING && userService.getUserByAccountId(transfer.getAccountTo()).getUsername().equals(currentUser.getUsername())) {
-
                 ids.add(String.valueOf(transfer.getId()));
-                names.add(userService.getUserByAccountId(transfer.getAccountFrom()).getUsername());
-                amounts.add(String.valueOf(transfer.getAmount()));
-            }
+                names.add(userService.getUserByAccountId(transfer.getAccountTo()).getUsername());
+                amounts.add("$"+String.valueOf(transfer.getAmount()));
         }
 
         List<MenuColumn> columns = new ArrayList<>();
@@ -142,7 +156,7 @@ public class ConsoleService {
         columns.add(new MenuColumn("To", 12, names));
         columns.add(new MenuColumn("Amount", 24, amounts));
 
-        printTable("TRANSFERS", columns);
+        printTable("Pending Transfers", columns);
     }
 
     public void printUserMenu(User[] users) {

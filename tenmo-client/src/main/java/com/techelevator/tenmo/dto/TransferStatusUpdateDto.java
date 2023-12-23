@@ -1,4 +1,4 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.dto;
 
 public class TransferStatusUpdateDto {
     private int transferStatusId;
@@ -8,5 +8,9 @@ public class TransferStatusUpdateDto {
         } else {
             throw new IllegalArgumentException("Invalid transferStatus: " + transferStatusId);
         }
+    }
+
+    public int getTransferStatusId() {
+        return transferStatusId;
     }
 }
