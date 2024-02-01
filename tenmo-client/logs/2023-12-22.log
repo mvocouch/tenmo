@@ -1,0 +1,8 @@
+2023-12-22T18:23:05.5241924 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-12-22T18:26:36.1669699 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-12-22T20:43:59.9095184 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-12-22T20:44:06.046804 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2023-12-22T20:44:37.3802444 400 : [{"timestamp":"2023-12-23T04:44:37.368+00:00","status":400,"error":"Bad Request","message":"400 BAD_REQUEST","path":"/transfers/"}]
+2023-12-22T20:45:23.6651325 400 : [{"timestamp":"2023-12-23T04:45:23.663+00:00","status":400,"error":"Bad Request","message":"400 BAD_REQUEST","path":"/transfers/"}]
+2023-12-22T20:45:49.1073386 400 : [{"timestamp":"2023-12-23T04:45:49.105+00:00","status":400,"error":"Bad Request","message":"400 BAD_REQUEST","path":"/transfers/"}]
+2023-12-22T20:45:57.6636852 400 : [{"timestamp":"2023-12-23T04:45:57.661+00:00","status":400,"error":"Bad Request","message":"400 BAD_REQUEST","path":"/transfers/"}]
